@@ -75,7 +75,7 @@ object Etherwarp : Module(
                 cachedEtherData = mainHandItem.isEtherwarpItem()
             }
 
-            if (cachedEtherData == null || ((!EasyEtherwarp.enabled || !EasyEtherwarp.alwaysShow) && mc.player?.isShiftKeyDown == false && cachedEtherData?.itemId != "ETHERWARP_CONDUIT")) return@on
+            if (cachedEtherData == null || ((!EasyEtherwarp.enabled || !EasyEtherwarp.quickWarp) && mc.player?.isShiftKeyDown == false && cachedEtherData?.itemId != "ETHERWARP_CONDUIT")) return@on
 
             etherPos = getEtherPos(
                 if (useServerPosition) mc.player?.oldPosition() else mc.player?.position(),
@@ -93,7 +93,7 @@ object Etherwarp : Module(
 
         onSend<ServerboundUseItemPacket> {
             if (!LocationUtils.isCurrentArea(Island.SinglePlayer)) return@onSend
-            if (cachedEtherData == null || ((!EasyEtherwarp.enabled || !EasyEtherwarp.alwaysShow) && mc.player?.isShiftKeyDown == false && cachedEtherData?.itemId != "ETHERWARP_CONDUIT")) return@onSend
+            if (cachedEtherData == null || ((!EasyEtherwarp.enabled || !EasyEtherwarp.quickWarp) && mc.player?.isShiftKeyDown == false && cachedEtherData?.itemId != "ETHERWARP_CONDUIT")) return@onSend
 
             etherPos?.pos?.let {
                 if (etherPos?.succeeded == false) return@onSend

@@ -20,7 +20,7 @@ object EasyEtherwarp : Module(
     private var lastTeleportTime = 0L
 
     private var cooldown by NumberSetting("Cooldown", 500L, 20L, max = 1000L, desc = "Cooldown of using EasyEtherwarp (in milliseconds).")
-    val alwaysShow by BooleanSetting("Always Show", false, desc = "Show Etherwarp overlay whenever an Etherwarp-enabled item is held.")
+    val quickWarp by BooleanSetting(name = "QuickWarp", default = false, desc = "Alternative mode of EasyEtherwarp, which always shows overlay when item is held, and instantly warps upon left-clicking.")
 
     init {
         on<TickEvent.End> {
@@ -29,8 +29,10 @@ object EasyEtherwarp : Module(
 
             when (state) {
                 EtherwarpState.SNEAKING -> {
-                    mc.gameMode?.useItem(player, player.usedItemHand)
-                    state = EtherwarpState.INTERACTING
+                    if (quickWarp || !mc.options.keyAttack.isDown) {
+                        mc.gameMode?.useItem(player, player.usedItemHand)
+                        state = EtherwarpState.INTERACTING
+                    }
                 }
                 EtherwarpState.INTERACTING -> {
                     mc.options.keyShift.isDown = false
