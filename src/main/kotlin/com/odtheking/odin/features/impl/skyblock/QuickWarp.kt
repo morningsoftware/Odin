@@ -52,6 +52,12 @@ object QuickWarp : Module(
                 if (attackKeyIsDown && curTime - lastTeleportTime >= cooldown && !attackKeyWasDown) {
                     lastTeleportTime = curTime
                     mc.options.keyShift.isDown = true
+
+                    // TODO: Maybe make this togglable?
+                    // Makes the player not descend while holding left-click for the TP.
+                    if (player.abilities.flying)
+                        mc.options.keyJump.isDown = true
+
                     state = EtherwarpState.SNEAKING
                 }
                 attackKeyWasDown = attackKeyIsDown
