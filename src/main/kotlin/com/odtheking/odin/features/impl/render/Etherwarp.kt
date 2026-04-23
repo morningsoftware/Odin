@@ -11,6 +11,7 @@ import com.odtheking.odin.events.core.on
 import com.odtheking.odin.events.core.onReceive
 import com.odtheking.odin.events.core.onSend
 import com.odtheking.odin.features.Module
+import com.odtheking.odin.features.impl.skyblock.EasyEtherwarp
 import com.odtheking.odin.utils.*
 import com.odtheking.odin.utils.Color.Companion.withAlpha
 import com.odtheking.odin.utils.render.drawStyledBox
@@ -48,7 +49,6 @@ object Etherwarp : Module(
     private val useServerPosition by BooleanSetting("Use Server Position", false, desc = "Uses the server position for etherwarp instead of the client position.").withDependency { render }
     private val fullBlock by BooleanSetting("Full Block", false, desc = "Renders the the 1x1x1 block instead of it's actual size.").withDependency { render }
     private val depth by BooleanSetting("Depth", false, desc = "Renders the box through walls.").withDependency { render }
-    private val alwaysShow by BooleanSetting("Always Show", false, desc = "Shows the Etherwarp overlay on AOTV without sneaking.").withDependency { render }
 
     private val dropdown by DropdownSetting("Sounds", false)
     private val sounds by BooleanSetting("Custom Sounds", false, desc = "Plays the selected custom sound when you etherwarp.").withDependency { dropdown }
@@ -75,7 +75,7 @@ object Etherwarp : Module(
                 cachedEtherData = mainHandItem.isEtherwarpItem()
             }
 
-            if (cachedEtherData == null || (!alwaysShow && mc.player?.isShiftKeyDown == false && cachedEtherData?.itemId != "ETHERWARP_CONDUIT")) return@on
+            if (cachedEtherData == null || ((!EasyEtherwarp.enabled || !EasyEtherwarp.alwaysShow) && mc.player?.isShiftKeyDown == false && cachedEtherData?.itemId != "ETHERWARP_CONDUIT")) return@on
 
             etherPos = getEtherPos(
                 if (useServerPosition) mc.player?.oldPosition() else mc.player?.position(),
@@ -93,7 +93,7 @@ object Etherwarp : Module(
 
         onSend<ServerboundUseItemPacket> {
             if (!LocationUtils.isCurrentArea(Island.SinglePlayer)) return@onSend
-            if (cachedEtherData == null || (!alwaysShow && mc.player?.isShiftKeyDown == false && cachedEtherData?.itemId != "ETHERWARP_CONDUIT")) return@onSend
+            if (cachedEtherData == null || ((!EasyEtherwarp.enabled || !EasyEtherwarp.alwaysShow) && mc.player?.isShiftKeyDown == false && cachedEtherData?.itemId != "ETHERWARP_CONDUIT")) return@onSend
 
             etherPos?.pos?.let {
                 if (etherPos?.succeeded == false) return@onSend

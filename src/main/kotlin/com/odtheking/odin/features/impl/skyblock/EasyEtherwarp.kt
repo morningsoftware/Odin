@@ -1,6 +1,7 @@
 package com.odtheking.odin.features.impl.skyblock
 
 import com.odtheking.odin.clickgui.settings.impl.BooleanSetting
+import com.odtheking.odin.clickgui.settings.impl.NumberSetting
 import com.odtheking.odin.events.TickEvent
 import com.odtheking.odin.events.core.on
 import com.odtheking.odin.features.Module
@@ -12,10 +13,14 @@ object EasyEtherwarp : Module(
     description = "Left-clicking with AOTV activates Etherwarp."
 ) {
     private enum class EtherwarpState { IDLE, SNEAKING, INTERACTING }
+
     private var state = EtherwarpState.IDLE
     private var attackKeyWasDown = false
+
     private var lastTeleportTime = 0L
-    private var cooldown = 500L
+
+    private var cooldown by NumberSetting("Cooldown", 500L, 20L, max = 1000L, desc = "The cooldown of using EasyEtherwarp (in milliseconds).")
+    val alwaysShow by BooleanSetting("Always Show", false, desc = "Show the Etherwarp overlay whenever AOTV is held.")
 
     init {
         on<TickEvent.End> {
@@ -42,7 +47,6 @@ object EasyEtherwarp : Module(
 
                 // Do not allow holding left-click for multiple TPs, and only allow one TP every 500ms.
                 // Without either of these checks, there is a high chance for AC flags.
-                // TODO: Add an adjustable cooldown.
                 if (attackKeyIsDown && curTime - lastTeleportTime >= cooldown && !attackKeyWasDown) {
                     lastTeleportTime = curTime
                     mc.options.keyShift.isDown = true
