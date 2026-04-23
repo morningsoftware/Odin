@@ -73,7 +73,7 @@ object ModuleManager {
 
             //skyblock
             ChatCommands, NoCursorReset, Ragnarock, SpringBoots, WardrobeKeybinds, PetKeybinds, AutoSprint,
-            CommandKeybinds, SlotBinds, Splits, EasyEtherwarp,
+            CommandKeybinds, SlotBinds, Splits, QuickWarp,
 
             // nether
             SupplyHelper, BuildHelper, RemovePerks, NoPre, PearlWaypoints, FreshTools, KuudraInfo, Misc, Vesuvius

@@ -8,9 +8,9 @@ import com.odtheking.odin.features.Module
 import com.odtheking.odin.utils.isEtherwarpItem
 import com.odtheking.odin.utils.skyblock.LocationUtils
 
-object EasyEtherwarp : Module(
-    name = "EasyEtherwarp",
-    description = "Left-clicking Etherwarp-enabled item activates Etherwarp."
+object QuickWarp : Module(
+    name = "QuickWarp",
+    description = "Introduces new, faster ways to Etherwarp when using an Etherwarp-enabled item."
 ) {
     private enum class EtherwarpState { IDLE, SNEAKING, INTERACTING }
 
@@ -20,7 +20,7 @@ object EasyEtherwarp : Module(
     private var lastTeleportTime = 0L
 
     private var cooldown by NumberSetting("Cooldown", 500L, 20L, max = 1000L, desc = "Cooldown of using EasyEtherwarp (in milliseconds).")
-    val quickWarp by BooleanSetting(name = "QuickWarp", default = false, desc = "Alternative mode of EasyEtherwarp, which always shows overlay when item is held, and instantly warps upon left-clicking.")
+    val instantWarp by BooleanSetting(name = "Instant Warp", default = false, desc = "Alternative mode of EasyEtherwarp, which always shows overlay when item is held, and instantly warps upon left-clicking.")
 
     init {
         on<TickEvent.End> {
@@ -29,7 +29,7 @@ object EasyEtherwarp : Module(
 
             when (state) {
                 EtherwarpState.SNEAKING -> {
-                    if (quickWarp || !mc.options.keyAttack.isDown) {
+                    if (instantWarp || !mc.options.keyAttack.isDown) {
                         mc.gameMode?.useItem(player, player.usedItemHand)
                         state = EtherwarpState.INTERACTING
                     }
