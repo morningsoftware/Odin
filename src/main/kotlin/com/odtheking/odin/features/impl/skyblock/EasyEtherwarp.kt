@@ -10,7 +10,7 @@ import com.odtheking.odin.utils.skyblock.LocationUtils
 
 object EasyEtherwarp : Module(
     name = "EasyEtherwarp",
-    description = "Left-clicking with AOTV activates Etherwarp."
+    description = "Left-clicking Etherwarp-enabled item activates Etherwarp."
 ) {
     private enum class EtherwarpState { IDLE, SNEAKING, INTERACTING }
 
@@ -19,8 +19,8 @@ object EasyEtherwarp : Module(
 
     private var lastTeleportTime = 0L
 
-    private var cooldown by NumberSetting("Cooldown", 500L, 20L, max = 1000L, desc = "The cooldown of using EasyEtherwarp (in milliseconds).")
-    val alwaysShow by BooleanSetting("Always Show", false, desc = "Show the Etherwarp overlay whenever AOTV is held.")
+    private var cooldown by NumberSetting("Cooldown", 500L, 20L, max = 1000L, desc = "Cooldown of using EasyEtherwarp (in milliseconds).")
+    val alwaysShow by BooleanSetting("Always Show", false, desc = "Show Etherwarp overlay whenever an Etherwarp-enabled item is held.")
 
     init {
         on<TickEvent.End> {
