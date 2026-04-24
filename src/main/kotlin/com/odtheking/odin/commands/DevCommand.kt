@@ -53,6 +53,32 @@ val devCommand = Commodore("oddev") {
         modMessage("§8Simulated message: ${greedyString.string}")
     }
 
+    literal("skyblock") {
+        literal("status").runs {
+            val mode = when {
+                !LocationUtils.isSkyblockStateForced -> "auto"
+                LocationUtils.isInSkyblock -> "on"
+                else -> "off"
+            }
+            modMessage("SkyBlock detection mode: $mode. Effective isInSkyblock=${LocationUtils.isInSkyblock}.")
+        }
+
+        literal("on").runs {
+            LocationUtils.setSkyblockStateOverride(true)
+            modMessage("SkyBlock simulation forced on.")
+        }
+
+        literal("off").runs {
+            LocationUtils.setSkyblockStateOverride(false)
+            modMessage("SkyBlock simulation forced off.")
+        }
+
+        literal("auto").runs {
+            LocationUtils.setSkyblockStateOverride(null)
+            modMessage("SkyBlock simulation cleared.")
+        }
+    }
+
     literal("updatedevs").runs {
         OdinMod.scope.launch {
             devMessage(PlayerSize.updateCustomProperties())

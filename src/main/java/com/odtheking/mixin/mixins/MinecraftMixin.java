@@ -4,6 +4,7 @@ import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.odtheking.odin.events.BlockInteractEvent;
 import com.odtheking.odin.events.EntityInteractEvent;
 import com.odtheking.odin.features.impl.boss.TerminalSolver;
+import com.odtheking.odin.features.impl.skyblock.QuickWarp;
 import com.odtheking.odin.utils.skyblock.dungeon.terminals.TerminalUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.phys.BlockHitResult;
@@ -15,6 +16,7 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(Minecraft.class)
 public abstract class MinecraftMixin {
@@ -33,6 +35,16 @@ public abstract class MinecraftMixin {
     private void cancelEntityUse(CallbackInfo ci) {
         if (!(this.hitResult instanceof EntityHitResult entityHitResult)) return;
         if (new EntityInteractEvent(entityHitResult.getLocation(), entityHitResult.getEntity()).postAndCatch()) ci.cancel();
+    }
+
+    @Inject(method = "startAttack", at = @At("HEAD"), cancellable = true)
+    private void cancelQuickWarpAttack(CallbackInfoReturnable<Boolean> cir) {
+        if (QuickWarp.INSTANCE.shouldSuppressLeftClick()) cir.setReturnValue(false);
+    }
+
+    @Inject(method = "continueAttack", at = @At("HEAD"), cancellable = true)
+    private void cancelQuickWarpAttackHold(boolean isAttacking, CallbackInfo ci) {
+        if (isAttacking && QuickWarp.INSTANCE.shouldSuppressLeftClick()) ci.cancel();
     }
 
     @ModifyExpressionValue(method = "resizeDisplay", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/OptionInstance;get()Ljava/lang/Object;"))

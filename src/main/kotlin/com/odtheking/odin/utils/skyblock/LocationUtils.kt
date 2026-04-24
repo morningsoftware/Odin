@@ -14,7 +14,10 @@ import kotlin.jvm.optionals.getOrNull
 
 object LocationUtils {
 
+    private var forcedSkyblockState: Boolean? = null
+
     var isInSkyblock: Boolean = false
+        get() = forcedSkyblockState ?: field
         private set
 
     var currentArea: Island = Island.Unknown
@@ -22,6 +25,13 @@ object LocationUtils {
 
     var lobbyId: String? = null
         private set
+
+    val isSkyblockStateForced: Boolean
+        get() = forcedSkyblockState != null
+
+    fun setSkyblockStateOverride(state: Boolean?) {
+        forcedSkyblockState = state
+    }
 
     private val lobbyRegex = Regex("\\d\\d/\\d\\d/\\d\\d (\\w{0,6}) *")
 
